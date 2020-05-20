@@ -39,27 +39,25 @@ export default {
       query: ""
     };
   },
-  methods: {
-    getCities: function() {
-      API.get("find", {
-        params: {
-          q: this.query
-        }
-      })
-        .then(response => {
-          this.results = response.data;
-        })
-        .catch(error => {
-          this.errors.push(error);
-        });
-    }
+  created () {
+    API.get('weather', {
+      params: {
+          id: this.$route.params.cityId
+      }
+    })
+    .then(response => {
+      this.weatherData = response.data
+    })
+    .catch(error => {
+      this.errors.push(error)
+    });
   },
   components: {
-    "weather-summary": WeatherSummary,
-    "weather-conditions": WeatherConditions,
+    'weather-summary': WeatherSummary,
+    'weather-conditions': WeatherConditions,
     'error-list': ErrorList
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

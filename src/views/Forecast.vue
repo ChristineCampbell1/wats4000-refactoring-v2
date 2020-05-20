@@ -38,29 +38,47 @@ export default {
       query: ''
     }
   },
-  methods: {
-    getCities: function () {
-      API.get('find', {
-        params: {
-            q: this.query
-        }
-      })
-      .then(response => {
-        this.results = response.data
-      })
-      .catch(error => {
-        this.errors.push(error)
-        });
+  created () {
+    API.get('forecast', {
+      params: {
+          id: this.$route.params.cityId
+      }
+    })
+    .then(response => {
+      this.weatherData = response.data
+    })
+    .catch(error => {
+      this.errors.push(error)
+    });
+  },
+  filters: {
+    formatDate: function (timestamp){
+      let date = new Date(timestamp * 1000);
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      let daynum = date.getDate();
+      let month = date.getMonth();
+
+      let hour = date.getHours();
+      if (hour === 12) {
+        hour = 'Noon';
+      } else if (hour === 0) {
+        hour = 'Midnight';
+      } else if (hour > 12) {
+        hour = hour - 12 + 'PM';
+      } else if (hour < 12) {
+        hour = hour + 'AM';
+      }
+      return `${ months[month] } ${ daynum } @ ${ hour }`;
     }
   },
   components: {
-    "weather-summary": WeatherSummary,
-    "weather-conditions": WeatherConditions,
+    'weather-summary': WeatherSummary,
+    'weather-conditions': WeatherConditions,
     'error-list': ErrorList
   }
-};
+}
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .errors li {
